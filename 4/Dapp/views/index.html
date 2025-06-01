@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GachonCoin DApp</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: #0056b3; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="number"] { width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .result { margin-top: 10px; padding: 10px; background-color: #e9ecef; border-radius: 4px; }
+        #error { color: red; margin-top:10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GachonCoin!</h1>
+
+        <div class="section">
+            <h2>Reguser (회원가입)</h2>
+            <label for="regName">이름:</label>
+            <input type="text" id="regName" name="regName">
+            <label for="regBalance">초기 잔액:</label>
+            <input type="number" id="regBalance" name="regBalance">
+            <button onclick="registerUser()">사용자 등록</button>
+            <div class="result" id="regResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>checkBal(잔액 조회)</h2>
+            <label for="checkName">이름:</label>
+            <input type="text" id="checkName" name="checkName">
+            <button onclick="checkBalance()">잔액 조회</button>
+            <div class="result" id="checkBalResult"></div>
+        </div>
+
+        <div class="section">
+            <h2>transBal(송금)</h2>
+            <label for="fromName">보내는 사람:</label>
+            <input type="text" id="fromName" name="fromName">
+            <label for="toName">받는 사람:</label>
+            <input type="text" id="toName" name="toName">
+            <label for="transferAmount">금액:</label>
+            <input type="number" id="transferAmount" name="transferAmount">
+            <button onclick="transferBalance()">송금</button>
+            <div class="result" id="transferResult"></div>
+        </div>
+        <div id="error"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        const contractABI = [];
+        const contractAddress = '';
+
+        const web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545")); 
+        let contract;
+
+        async function init() {
+            if (contractAddress && contractABI.length > 0) {
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+                console.log("DApp 초기화 완료");
+            } else {
+                document.getElementById('error').innerText = '스마트 계약 주소 또는 ABI가 설정되지 않았습니다. main.js에서 배포 후 해당 정보를 업데이트하세요.';
+                console.error("스마트 계약 주소 또는 ABI가 설정되지 않았습니다.");
+            }
+        }
+        
+        window.onload = init;
+
+        async function registerUser() {
+            const name = document.getElementById('regName').value;
+            const balance = document.getElementById('regBalance').value;
+            const resultDiv = document.getElementById('regResult');
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerText = '';
+            resultDiv.innerText = '';
+
+            if (!contract) {
+                errorDiv.innerText = '계약이 초기화되지 않았습니다.';
+                return;
+            }
+            if (!name || !balance) {
+                errorDiv.innerText = '이름과 초기 잔액을 모두 입력해주세요.';
+                return;
+            }
+
+            try {
+                const accounts = await web3.eth.getAccounts();
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, balance: parseInt(balance) }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerText = result.message;
+                } else {
+                    errorDiv.innerText = result.error || '등록 실패';
+                }
+            } catch (err) {
+                console.error(err);
+                errorDiv.innerText = '사용자 등록 중 오류 발생: ' + err.message;
+            }
+        }
+
+        async function checkBalance() {
+            const name = document.getElementById('checkName').value;
+            const resultDiv = document.getElementById('checkBalResult');
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerText = '';
+            resultDiv.innerText = '';
+
+            if (!contract) {
+                errorDiv.innerText = '계약이 초기화되지 않았습니다.';
+                return;
+            }
+            if (!name) {
+                errorDiv.innerText = '조회할 사용자의 이름을 입력해주세요.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/balance/${name}`);
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerText = `${name}님의 잔액: ${result.balance} GACHON`;
+                } else {
+                    errorDiv.innerText = result.error || '잔액 조회 실패';
+                }
+            } catch (err) {
+                console.error(err);
+                errorDiv.innerText = '잔액 조회 중 오류 발생: ' + err.message;
+            }
+        }
+
+        async function transferBalance() {
+            const fromName = document.getElementById('fromName').value;
+            const toName = document.getElementById('toName').value;
+            const amount = document.getElementById('transferAmount').value;
+            const resultDiv = document.getElementById('transferResult');
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerText = '';
+            resultDiv.innerText = '';
+
+            if (!contract) {
+                errorDiv.innerText = '계약이 초기화되지 않았습니다.';
+                return;
+            }
+            if (!fromName || !toName || !amount) {
+                errorDiv.innerText = '모든 필드를 입력해주세요.';
+                return;
+            }
+
+            try {
+                const accounts = await web3.eth.getAccounts();
+                const response = await fetch('/transfer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ from: fromName, to: toName, amount: parseInt(amount) }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    resultDiv.innerText = result.message;
+                } else {
+                    errorDiv.innerText = result.error || '송금 실패';
+                }
+            } catch (err) {
+                console.error(err);
+                errorDiv.innerText = '송금 중 오류 발생: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>

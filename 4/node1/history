@@ -1,0 +1,63 @@
+admin.peers
+admin.nodeinfo.enode
+admin.nodeInfo.enode
+admin.addPeer("enode://611ed43673f00991d75e99b9298980264a5e3e26b287da4b537577d418a6bb3be8d12254912c4db2de726f9cb8381f348dd36136f01aa579eaa0d8103227b052@127.0.0.1:30304?discport=0")
+admin.peers
+admin.addPeer("enode://b174716cc82e9f6e2ba5e558827a141d11774bd2cc874d59f2910538c9e43918593852d80d782fb72af686263d2755fd6d898b569ce8aafddcf71189eba5c9d2@127.0.0.1:30305?discport=0")
+admin.peers
+eth.accounts
+miner.start()
+miner.stiop
+miner.stop()
+eth.blcokNumber
+eth.blockNumber
+eth.getBalance(eth.accounts[0])
+eth.sendTransaction({from:eth.accounts[0], to:"0x5271ecfaece781447e83fd9328aff755e8f3bf9d", value: web3.toWei(555, "ether")})
+eth.sendTransaction({from:eth.accounts[0], to:"0x5271ecfaece781447e83fd9328aff755e8f3bf9d", value: web3.toWei(55, "ether")})
+miner.start()
+miner.stop()
+ether.getBalance("0x5271ecfaece781447e83fd9328aff755e8f3bf9d")
+> eth.sendTransaction({from:eth.accounts[0], to:"0x5271ecfaece781447e83fd9328aff755e8f3bf9d", value: web3.toWei(5, "ether")})
+eth.sendTransaction({from:eth.accounts[0], to:"0x5271ecfaece781447e83fd9328aff755e8f3bf9d", value: web3.toWei(5, "ether")})
+eth.getTranscation("0x03296e95daf0a139d5a0c6b051bfa1bfa99f34651590771d4cf5b5180b34b173")
+eth.getTransaction("0x03296e95daf0a139d5a0c6b051bfa1bfa99f34651590771d4cf5b5180b34b173")
+eth.getTransaction(""0x05d1eeffd8a304f266cee99a96d82644ce2265d45e559dd8d7116198942d47fb"")
+eth.getTransaction("0x05d1eeffd8a304f266cee99a96d82644ce2265d45e559dd8d7116198942d47fb")
+eth.getBlock(1)
+eth.getBlock(34)
+miner.start()
+miner.stop()
+miner.start()
+miner.stop()
+geth version
+miner.start()
+miner.stop()
+miner.start()
+miner.stop()
+miner.start()
+miner.stop()
+eth.getTransactionCount(eth.accounts[0])
+var addr = eth.accounts[0]; // 또는 원하는 주소로 대체
+for (var i = eth.blockNumber - 100; i <= eth.blockNumber; i++) {
+  var block = eth.getBlock(i, true);
+  if (block && block.transactions.length > 0) {
+    block.transactions.forEach(function(tx) {
+      if (tx.from && tx.from.toLowerCase() == addr.toLowerCase()) {
+        console.log("블록:", i, "해시:", tx.hash, "to:", tx.to, "nonce:", tx.nonce);
+      }
+    });
+  }
+}
+> var addr = eth.accounts[0]; // 또는 원하는 주소로 대체
+ockNumber - 100; i <= eth.blockNumber; i++) {
+miner.start()
+miner.stop()
+eth.getTransaction("0x0f4c59a3aa433f517cbd4351422ae07c80b853320a9faad7335403ad1e4b2c10")
+eth.getTransactionRecipt("0x0f4c59a3aa433f517cbd4351422ae07c80b853320a9faad7335403ad1e4b2c10")
+eth.getTransactionReceipt("0x0f4c59a3aa433f517cbd4351422ae07c80b853320a9faad7335403ad1e4b2c10")
+eth.getTransaction('0x0f4c59a3aa433f517cbd4351422ae07c80b853320a9faad7335403ad1e4b2c10')
+eth.getTransactionReceipt('0x0f4c59a3aa433f517cbd4351422ae07c80b853320a9faad7335403ad1e4b2c10')
+eth.getTransaction('0xbb61101b34de25ff5049745ea5095cc6777836fb64512cbbd86aedf5f00cd50c')
+eth.getTransactionReceipt('0xbb61101b34de25ff5049745ea5095cc6777836fb64512cbbd86aedf5f00cd50c')
+eth.getTransaction('0x0c0d5505211f4f68ae77841440413d8d14979a7acce382fafee7796cda945924')
+eth.getTransactionReceipt('0x0c0d5505211f4f68ae77841440413d8d14979a7acce382fafee7796cda945924')
